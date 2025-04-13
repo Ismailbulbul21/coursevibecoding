@@ -1,0 +1,5 @@
+@import "tailwindcss";
+@tailwind utilities;
+
+/* Empty file that imports tailwind */
+/* This file is referenced in index.html */ 
