@@ -7,10 +7,15 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Dependency directories
+# Dependencies
 node_modules
+.pnp
+.pnp.js
+
+# Build output
 dist
 dist-ssr
+build
 *.local
 
 # Editor directories and files
@@ -29,18 +34,32 @@ dist-ssr
 .env
 .env.*
 !.env.example
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Supabase
+.supabase
+
+# Testing
+coverage
+.nyc_output
+
+# Misc
+.cache
+.parcel-cache
+.temp
+.tmp
+temp
 
 # Vercel
 .vercel
+.next
+.output
 
-# Build files
-/build
-
-# Coverage directory
-coverage
-
-# Cursor files
+# Cursor-specific
 .cursor
 
-# Local Netlify folder
-.netlify 
+# Custom Ignores
+/public/assets/media 

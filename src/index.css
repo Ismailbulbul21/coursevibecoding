@@ -106,118 +106,23 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
-/* Redesigned Navbar Styles */
-.navbar {
-  background-color: white;
-  border-bottom: 1px solid rgba(229, 231, 235, 0.5);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  transition: all 0.3s ease;
-}
-
-.navbar-scrolled {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(8px);
-  background-color: rgba(255, 255, 255, 0.9);
-}
-
-.nav-link {
-  position: relative;
-  display: inline-block;
-  padding: 0.5rem 1rem;
-  margin: 0 0.25rem;
-  font-weight: 500;
-  color: #4B5563;
-  text-decoration: none;
-  border-radius: 0.375rem;
-  transition: all 0.2s ease;
-  overflow: hidden;
-}
-
-.nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  width: 0;
-  height: 2px;
-  background-color: #5E97F2;
-  transition: all 0.3s ease;
-  transform: translateX(-50%);
-}
-
-.nav-link:hover {
-  color: #5E97F2;
-  background-color: rgba(94, 151, 242, 0.05);
-}
-
-.nav-link:hover::after {
-  width: 60%;
-}
-
-.nav-link-active {
-  color: #5E97F2;
-  font-weight: 600;
-}
-
-.nav-link-active::after {
-  width: 60%;
-}
-
-.nav-btn {
-  display: inline-block;
-  padding: 0.4rem 0.75rem;
-  margin: 0 0.125rem;
-  font-weight: 500;
-  font-size: 0.875rem;
-  border-radius: 0.375rem;
-  transition: all 0.3s ease;
-  background-color: #F3F4F6;
-  color: #4B5563;
-  border: 1px solid transparent;
-}
-
-.nav-btn:hover {
-  background-color: #E5E7EB;
-  transform: translateY(-1px);
-}
-
-.nav-btn-primary {
-  background-color: #5E97F2;
-  color: white;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-.nav-btn-primary:hover {
-  background-color: #4A83DD;
-  box-shadow: 0 2px 4px rgba(94, 151, 242, 0.25);
-}
+/* Other styles without @apply */
 
 /* Badge styling */
 .badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.25rem 0.625rem;
-  border-radius: 9999px;
-  font-size: 0.75rem;
-  font-weight: 500;
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
 }
 
 .badge-primary {
-  background-color: rgba(42, 63, 84, 0.1);
-  color: #E1E7ED;
+  @apply bg-[#2A3F54]/10 text-[#E1E7ED];
 }
 
 .badge-secondary {
-  background-color: rgba(94, 151, 242, 0.1);
-  color: #5E97F2;
+  @apply bg-[#5E97F2]/10 text-[#5E97F2];
 }
 
 .badge-success {
-  background-color: #F0FDF4;
-  color: #16A34A;
+  @apply bg-green-100 text-green-800;
 }
 
 /* Animation utilities */
@@ -235,21 +140,17 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .gradient-hover {
-  position: relative;
-  overflow: hidden;
+  @apply relative overflow-hidden;
 }
 
 .gradient-hover::before {
   content: '';
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transition: opacity 0.3s;
+  @apply absolute inset-0 opacity-0 transition-opacity duration-300;
   background: linear-gradient(135deg, rgba(94, 151, 242, 0.1) 0%, rgba(61, 122, 228, 0.2) 100%);
 }
 
 .gradient-hover:hover::before {
-  opacity: 1;
+  @apply opacity-100;
 }
 
 /* Card grid layouts */
@@ -269,23 +170,4 @@ h1, h2, h3, h4, h5, h6 {
   .card-grid {
     grid-template-columns: repeat(3, 1fr);
   }
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.fade-in {
-  animation: fadeIn 0.3s ease-out forwards;
-}
-
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-}
-
-.pulse-on-hover:hover {
-  animation: pulse 1s ease-in-out infinite;
 }

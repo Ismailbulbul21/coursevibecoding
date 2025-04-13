@@ -5,6 +5,17 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Online waxbarasho platform - barashada programming, web development, iyo technology kala duwan">
+    
+    <!-- Security and Embedding policies for YouTube -->
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <meta http-equiv="Cross-Origin-Resource-Policy" content="cross-origin">
+    
+    <!-- Preconnect to domains for performance -->
+    <link rel="preconnect" href="https://www.youtube.com">
+    <link rel="preconnect" href="https://www.youtube-nocookie.com">
+    <link rel="preconnect" href="https://i.ytimg.com">
+    <link rel="preconnect" href="https://s.ytimg.com">
+    
     <title>Waxbarashada Online</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,6 +24,8 @@
   </head>
   <body>
     <div id="root"></div>
+    <!-- Preload YouTube API script to ensure it's available early -->
+    <script async src="https://www.youtube.com/iframe_api" crossorigin="anonymous"></script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

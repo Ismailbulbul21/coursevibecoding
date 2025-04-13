@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useAuthStore } from '../store/authStore';
@@ -10,21 +10,6 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  
-  useEffect(() => {
-    const handleScroll = () => {
-      const isScrolled = window.scrollY > 20;
-      if (isScrolled !== scrolled) {
-        setScrolled(isScrolled);
-      }
-    };
-
-    document.addEventListener('scroll', handleScroll);
-    return () => {
-      document.removeEventListener('scroll', handleScroll);
-    };
-  }, [scrolled]);
   
   const handleSignOut = async () => {
     await signOut();
@@ -40,7 +25,7 @@ const Navbar = () => {
   };
   
   return (
-    <nav className={`navbar ${scrolled ? 'navbar-scrolled' : ''}`}>
+    <nav className="navbar">
       <div className="container mx-auto px-4">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
@@ -50,37 +35,35 @@ const Navbar = () => {
               </svg>
               <span className="text-[#346B7E] text-xl font-bold">BulbulAI</span>
             </Link>
-            <div className="hidden md:block ml-6">
-              <div className="flex items-center space-x-1">
-                <Link to="/" className={`nav-btn ${isActive('/') ? 'nav-btn-primary' : ''} pulse-on-hover`}>
+            <div className="hidden md:block ml-10">
+              <div className="flex items-center space-x-2">
+                <Link to="/" className={`nav-link ${isActive('/')}`}>
                   Bogga Hore
                 </Link>
-                <Link to="/courses" className={`nav-btn ${isActive('/courses') ? 'nav-btn-primary' : ''} pulse-on-hover`}>
+                <Link to="/courses" className={`nav-link ${isActive('/courses')}`}>
                   Koorsooyinka
                 </Link>
               </div>
             </div>
           </div>
-          <div className="hidden md:flex items-center">
+          <div className="hidden md:flex items-center space-x-4">
             {isAuthenticated ? (
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-4">
                 {isAdmin && (
-                  <Link to="/admin" className={`nav-btn ${isActive('/admin') ? 'nav-btn-primary' : ''}`}>
+                  <Link to="/admin" className={`nav-link ${isActive('/admin')}`}>
                     Maamulka
                   </Link>
                 )}
-                <div className="ml-2">
-                  <ProfileDropdown />
-                </div>
+                <ProfileDropdown />
               </div>
             ) : (
-              <div className="flex items-center space-x-2">
-                <Link to="/login" className="nav-btn">
+              <div className="flex items-center space-x-4">
+                <Link to="/login" className="nav-link">
                   Gal
                 </Link>
                 <Link 
                   to="/register" 
-                  className="nav-btn nav-btn-primary pulse-on-hover"
+                  className="btn-primary"
                 >
                   Iska Diiwaan Geli
                 </Link>
@@ -90,12 +73,12 @@ const Navbar = () => {
           <div className="flex md:hidden items-center">
             <button
               onClick={toggleMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-[#346B7E] focus:outline-none transition-transform duration-300 ease-in-out"
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-[#346B7E] focus:outline-none"
               aria-expanded="false"
             >
               <span className="sr-only">Open main menu</span>
               <svg
-                className={`h-6 w-6 ${isMenuOpen ? 'transform rotate-90' : ''}`}
+                className="h-6 w-6"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -113,19 +96,19 @@ const Navbar = () => {
         </div>
       </div>
       
-      {/* Mobile menu with fade-in animation */}
+      {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-100 fade-in">
-          <div className="px-2 pt-2 pb-3 space-y-2">
+        <div className="md:hidden bg-white border-t border-gray-100">
+          <div className="px-2 pt-2 pb-3 space-y-1">
             <Link 
               to="/" 
-              className={`block px-3 py-2 rounded-md text-base font-medium ${isActive('/') ? 'nav-btn-primary' : 'bg-gray-50 text-gray-600 hover:bg-gray-100'}`}
+              className={`block px-3 py-2 rounded-md text-base font-medium ${isActive('/') ? 'text-[#346B7E]' : 'text-gray-600 hover:text-[#346B7E]'}`}
             >
               Bogga Hore
             </Link>
             <Link 
               to="/courses" 
-              className={`block px-3 py-2 rounded-md text-base font-medium ${isActive('/courses') ? 'nav-btn-primary' : 'bg-gray-50 text-gray-600 hover:bg-gray-100'}`}
+              className={`block px-3 py-2 rounded-md text-base font-medium ${isActive('/courses') ? 'text-[#346B7E]' : 'text-gray-600 hover:text-[#346B7E]'}`}
             >
               Koorsooyinka
             </Link>
@@ -134,32 +117,32 @@ const Navbar = () => {
                 {isAdmin && (
                   <Link 
                     to="/admin" 
-                    className={`block px-3 py-2 rounded-md text-base font-medium ${isActive('/admin') ? 'nav-btn-primary' : 'bg-gray-50 text-gray-600 hover:bg-gray-100'}`}
+                    className={`block px-3 py-2 rounded-md text-base font-medium ${isActive('/admin') ? 'text-[#346B7E]' : 'text-gray-600 hover:text-[#346B7E]'}`}
                   >
                     Maamulka
                   </Link>
                 )}
                 <Link 
                   to="/profile" 
-                  className={`block px-3 py-2 rounded-md text-base font-medium ${isActive('/profile') ? 'nav-btn-primary' : 'bg-gray-50 text-gray-600 hover:bg-gray-100'}`}
+                  className={`block px-3 py-2 rounded-md text-base font-medium ${isActive('/profile') ? 'text-[#346B7E]' : 'text-gray-600 hover:text-[#346B7E]'}`}
                 >
                   Shakhsiyadda
                 </Link>
                 <Link 
                   to="/dashboard" 
-                  className={`block px-3 py-2 rounded-md text-base font-medium ${isActive('/dashboard') ? 'nav-btn-primary' : 'bg-gray-50 text-gray-600 hover:bg-gray-100'}`}
+                  className={`block px-3 py-2 rounded-md text-base font-medium ${isActive('/dashboard') ? 'text-[#346B7E]' : 'text-gray-600 hover:text-[#346B7E]'}`}
                 >
                   Bogga Guud
                 </Link>
                 <Link 
                   to="/payments" 
-                  className={`block px-3 py-2 rounded-md text-base font-medium ${isActive('/payments') ? 'nav-btn-primary' : 'bg-gray-50 text-gray-600 hover:bg-gray-100'}`}
+                  className={`block px-3 py-2 rounded-md text-base font-medium ${isActive('/payments') ? 'text-[#346B7E]' : 'text-gray-600 hover:text-[#346B7E]'}`}
                 >
                   Lacag Bixinta
                 </Link>
                 <button 
                   onClick={handleSignOut}
-                  className="block w-full text-left px-3 py-2 rounded-md text-base font-medium bg-red-50 text-red-600 hover:bg-red-100"
+                  className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-[#346B7E]"
                 >
                   Ka Bax
                 </button>
@@ -168,13 +151,13 @@ const Navbar = () => {
               <>
                 <Link 
                   to="/login" 
-                  className="block px-3 py-2 rounded-md text-base font-medium bg-gray-50 text-gray-600 hover:bg-gray-100"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-[#346B7E]"
                 >
                   Gal
                 </Link>
                 <Link 
                   to="/register" 
-                  className="block px-3 py-2 rounded-md text-base font-medium bg-blue-50 text-blue-600 hover:bg-blue-100"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-[#346B7E] hover:text-[#1D3946]"
                 >
                   Iska Diiwaan Geli
                 </Link>
