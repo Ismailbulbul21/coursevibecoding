@@ -617,23 +617,23 @@ const CourseContent = () => {
                         >
                           Try Alternative Player
                         </button>
-        </div>
-                </div>
+                      </div>
+                    </div>
                   ) : showDirectIframe ? (
                     <div className="relative w-full h-full">
                       {/* Use ReactPlayer as a fallback */}
-                <ReactPlayer
-                  ref={playerRef}
+                      <ReactPlayer
+                        ref={playerRef}
                         url={activeLesson?.video_url || `https://www.youtube.com/watch?v=${activeLesson?.youtube_video_id}`}
-                  width="100%"
-                  height="100%"
+                        width="100%"
+                        height="100%"
                         playing
-                  controls
-                  onProgress={handleProgress}
-                  onEnded={handleEnded}
-                  config={{
-                    youtube: {
-                      playerVars: { 
+                        controls
+                        onProgress={handleProgress}
+                        onEnded={handleEnded}
+                        config={{
+                          youtube: {
+                            playerVars: { 
                               modestbranding: 1,
                               rel: 0,
                               autoplay: 1
@@ -671,70 +671,70 @@ const CourseContent = () => {
                           </div>
                         </div>
                       )}
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+                
+                {/* Lesson content */}
+                <div className="px-4 py-5 sm:p-6">
+                  {activeLesson ? (
+                    <>
+                      <h2 className="text-xl font-semibold text-gray-900">{activeLesson.title}</h2>
+                      
+                      {/* Progress bar */}
+                      <div className="mt-4">
+                        <div className="flex items-center justify-between text-sm text-gray-500 mb-1">
+                          <span>Progress</span>
+                          <span>{lessonProgress}%</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2.5">
+                          <div 
+                            className="bg-blue-600 h-2.5 rounded-full transition-all duration-300 ease-out" 
+                            style={{ width: `${lessonProgress}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                      
+                      {/* Description */}
+                      <div className="mt-6">
+                        <h3 className="text-lg font-medium text-gray-900">Description</h3>
+                        <div className="mt-2 prose prose-sm max-w-none text-gray-500">
+                          {activeLesson.description ? (
+                            <p>{activeLesson.description}</p>
+                          ) : (
+                            <p className="italic">No description available for this lesson.</p>
+                          )}
+                        </div>
+                      </div>
+                      
+                      {/* Completion status */}
+                      {isVideoCompleted && (
+                        <div className="mt-6 p-4 bg-green-50 rounded-md">
+                          <div className="flex">
+                            <div className="flex-shrink-0">
+                              <svg className="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                              </svg>
+                            </div>
+                            <div className="ml-3">
+                              <p className="text-sm font-medium text-green-800">
+                                Lesson completed!
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <p className="text-gray-500">Select a lesson to view its details</p>
+                  )}
+                </div>
               </>
             ) : (
               <div className="flex items-center justify-center aspect-video bg-gray-100">
                 <p className="text-gray-500">Select a lesson to start learning</p>
               </div>
             )}
-            
-            {/* Lesson content */}
-            <div className="px-4 py-5 sm:p-6">
-              {activeLesson ? (
-                <>
-                  <h2 className="text-xl font-semibold text-gray-900">{activeLesson.title}</h2>
-                  
-                  {/* Progress bar */}
-                  <div className="mt-4">
-                    <div className="flex items-center justify-between text-sm text-gray-500 mb-1">
-                      <span>Progress</span>
-                      <span>{lessonProgress}%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2.5">
-                      <div 
-                        className="bg-blue-600 h-2.5 rounded-full transition-all duration-300 ease-out" 
-                  style={{ width: `${lessonProgress}%` }}
-                ></div>
-                    </div>
-              </div>
-              
-                  {/* Description */}
-                  <div className="mt-6">
-                    <h3 className="text-lg font-medium text-gray-900">Description</h3>
-                    <div className="mt-2 prose prose-sm max-w-none text-gray-500">
-                      {activeLesson.description ? (
-                        <p>{activeLesson.description}</p>
-                      ) : (
-                        <p className="italic">No description available for this lesson.</p>
-                )}
-              </div>
-              </div>
-              
-                  {/* Completion status */}
-                  {isVideoCompleted && (
-                    <div className="mt-6 p-4 bg-green-50 rounded-md">
-                      <div className="flex">
-                        <div className="flex-shrink-0">
-                          <svg className="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                        </div>
-                        <div className="ml-3">
-                          <p className="text-sm font-medium text-green-800">
-                            Lesson completed!
-                          </p>
-                        </div>
-                      </div>
-                </div>
-              )}
-                </>
-              ) : (
-                <p className="text-gray-500">Select a lesson to view its details</p>
-              )}
-            </div>
           </div>
         </div>
       </main>
