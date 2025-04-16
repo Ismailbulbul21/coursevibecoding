@@ -13,19 +13,32 @@ const extractYoutubeId = (url) => {
   
   console.log('Extracting YouTube ID from:', url);
   
-  // Handle standard youtube.com/watch?v= format
-  const watchRegex = /(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/)|youtu\.be\/)([^?&/]+)/;
-  const match = url.match(watchRegex);
-  
-  if (match && match[1]) {
-    console.log('Extracted YouTube ID using regex:', match[1]);
-    return match[1];
-  }
-  
-  // If it's already just an ID (11 characters)
+  // First, check if it's already a valid YouTube ID (11 characters)
   if (/^[a-zA-Z0-9_-]{11}$/.test(url)) {
     console.log('URL is already a valid YouTube ID');
     return url;
+  }
+  
+  // Handle various YouTube URL formats
+  const patterns = [
+    // Standard watch URLs
+    /(?:youtube\.com\/watch\?(?:.*&)?v=|youtu\.be\/)([^?&/]+)/,
+    // Embed URLs
+    /youtube\.com\/embed\/([^?&/]+)/,
+    // Shortened URLs
+    /youtu\.be\/([^?&/]+)/,
+    // YouTube Music
+    /music\.youtube\.com\/watch\?(?:.*&)?v=([^?&/]+)/,
+    // YouTube Shorts
+    /youtube\.com\/shorts\/([^?&/]+)/
+  ];
+  
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match && match[1]) {
+      console.log('Extracted YouTube ID using pattern:', match[1]);
+      return match[1];
+    }
   }
   
   console.log('Could not extract YouTube ID from URL');
@@ -343,6 +356,13 @@ const CourseContent = () => {
           setShowDirectIframe(true);
           return;
         }
+        
+        if (!window.YT || typeof window.YT.Player !== 'function') {
+          console.error('YouTube API is not properly loaded');
+          setPlayerError(true);
+          setShowDirectIframe(true);
+          return;
+        }
 
         // Create a new YouTube player instance
         youtubePlayer.current = new window.YT.Player('youtube-player-container', {
@@ -354,7 +374,10 @@ const CourseContent = () => {
             controls: 1,         // Show video controls
             enablejsapi: 1,      // Enable JS API
             origin: window.location.origin, // Set origin for security
-            playsinline: 1       // Play inline on mobile devices
+            playsinline: 1,      // Play inline on mobile devices
+            host: 'https://www.youtube-nocookie.com', // Use privacy-enhanced mode
+            widgetid: 1,         // Required for some embeds
+            fs: 1                // Allow fullscreen
           },
           events: {
             'onReady': (event) => {
@@ -382,7 +405,7 @@ const CourseContent = () => {
                       }
                       
                       // Update progress in the database every 5 seconds
-                      updateProgress(activeLesson.id, currentTime, progressPercent);
+                      updateProgress(activeLesson.id, progressPercent > 95, currentTime);
                     }
                   } catch (error) {
                     console.error('Error tracking progress:', error);
@@ -402,10 +425,12 @@ const CourseContent = () => {
             },
             'onError': (event) => {
               console.error('YouTube player error:', event.data);
+              // Error codes: 2 (invalid parameter), 5 (HTML5 error), 100 (not found/private), 101/150 (embedding disabled)
               setPlayerError(true);
               
               // If video not found or embedding disabled, use the fallback
-              if (event.data === 100 || event.data === 101 || event.data === 150) {
+              if (event.data === 2 || event.data === 5 || event.data === 100 || event.data === 101 || event.data === 150) {
+                console.log('YouTube error detected, switching to ReactPlayer fallback');
                 setShowDirectIframe(true);
               }
             }
@@ -446,6 +471,7 @@ const CourseContent = () => {
     const script = document.createElement('script');
     script.src = 'https://www.youtube.com/iframe_api';
     script.async = true;
+    script.crossOrigin = "anonymous"; // Add CORS attribute for security
     script.onload = () => console.log('YouTube API script loaded');
     script.onerror = (error) => {
       console.error('Failed to load YouTube API:', error);
@@ -454,9 +480,18 @@ const CourseContent = () => {
     
     document.body.appendChild(script);
     
+    // Always set a fallback timer in case the API fails to initialize
+    const apiLoadTimeout = setTimeout(() => {
+      if (!window.YT || !window.YT.Player) {
+        console.log('YouTube API failed to initialize after timeout, using fallback');
+        setShowDirectIframe(true);
+      }
+    }, 5000);
+    
     return () => {
-      // Clean up global callback
+      // Clean up global callback and timeout
       window.onYouTubeIframeAPIReady = null;
+      clearTimeout(apiLoadTimeout);
     };
   }, []);
   
@@ -656,7 +691,9 @@ const CourseContent = () => {
                               autoplay: 1,
                               origin: window.location.origin,
                               playsinline: 1,
-                              enablejsapi: 1
+                              enablejsapi: 1,
+                              widgetid: 1,
+                              fs: 1
                             },
                             embedOptions: {
                               host: 'https://www.youtube-nocookie.com'
@@ -665,8 +702,23 @@ const CourseContent = () => {
                         }}
                         onError={(e) => {
                           console.error('ReactPlayer error:', e);
-                          // Try direct YouTube link as a last resort
-                          window.open(`https://www.youtube.com/watch?v=${activeLesson?.youtube_video_id || extractYoutubeId(activeLesson?.video_url)}`, '_blank');
+                          // Create a direct link as last resort
+                          const videoId = activeLesson?.youtube_video_id || extractYoutubeId(activeLesson?.video_url);
+                          if (videoId) {
+                            const fallbackUrl = document.createElement('iframe');
+                            fallbackUrl.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+                            fallbackUrl.width = "100%";
+                            fallbackUrl.height = "100%";
+                            fallbackUrl.frameBorder = "0";
+                            fallbackUrl.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+                            fallbackUrl.allowFullscreen = true;
+                            
+                            if (playerContainerRef.current && playerContainerRef.current.parentNode) {
+                              const container = playerContainerRef.current.parentNode;
+                              container.innerHTML = '';
+                              container.appendChild(fallbackUrl);
+                            }
+                          }
                         }}
                       />
                     </div>
