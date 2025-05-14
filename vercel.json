@@ -45,8 +45,6 @@
     }
   ],
   "rewrites": [
-    { "source": "/assets/:path*", "destination": "/assets/:path*" },
-    { "source": "/:path*.(js|css|svg|jpg|jpeg|png|gif|ico|woff|woff2|ttf|eot)", "destination": "/:path*.$1" },
-    { "source": "/:path*", "destination": "/index.html" }
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 } 
