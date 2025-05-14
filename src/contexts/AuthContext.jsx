@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { useAuthStore } from '../store/authStore';
 import { useProfileStore } from '../store/profileStore';
 import { supabase } from '../lib/supabase';
@@ -10,6 +10,18 @@ export const AuthProvider = ({ children }) => {
   const { fetchProfile } = useProfileStore();
   const [profile, setProfile] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Function to refresh the profile
+  const refreshProfile = useCallback(async () => {
+    if (user) {
+      console.log('Refreshing profile for user:', user.id);
+      const profileData = await fetchProfile(user.id);
+      console.log('Refreshed profile data received:', profileData);
+      setProfile(profileData);
+      return profileData;
+    }
+    return null;
+  }, [user, fetchProfile]);
 
   useEffect(() => {
     // Check for existing session
@@ -41,19 +53,8 @@ export const AuthProvider = ({ children }) => {
 
   // Fetch profile when user changes
   useEffect(() => {
-    const getProfile = async () => {
-      if (user) {
-        console.log('Fetching profile for user:', user.id);
-        const profileData = await fetchProfile(user.id);
-        console.log('Profile data received:', profileData);
-        setProfile(profileData);
-      } else {
-        setProfile(null);
-      }
-    };
-
-    getProfile();
-  }, [user, fetchProfile]);
+    refreshProfile();
+  }, [user, refreshProfile]);
 
   const isAdmin = !!profile?.is_admin;
   console.log('Auth context state:', { 
@@ -70,7 +71,8 @@ export const AuthProvider = ({ children }) => {
       profile,
       isAuthenticated: !!user,
       isAdmin,
-      isLoading 
+      isLoading,
+      refreshProfile
     }}>
       {children}
     </AuthContext.Provider>
