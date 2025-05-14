@@ -20,9 +20,51 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+      /* Basic styles to show immediately */
+      body { 
+        font-family: 'Poppins', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #F5F7FF;
+      }
+      .initial-loader {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        text-align: center;
+        color: #2C1952;
+      }
+      .spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #5D3BE7;
+        border-radius: 50%;
+        border-top-color: transparent;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+      }
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Initial loading state that shows before JavaScript loads -->
+      <div class="initial-loader">
+        <div class="spinner"></div>
+        <h2>Loading Waxbarashada Online...</h2>
+        <p>Please wait while we prepare your learning experience</p>
+        <noscript>
+          <div style="color: #FF3366; margin-top: 20px; padding: 20px; border: 1px solid #FF3366; border-radius: 4px;">
+            <strong>JavaScript is disabled.</strong> This application requires JavaScript to run. Please enable JavaScript in your browser settings and reload the page.
+          </div>
+        </noscript>
+      </div>
+    </div>
     <!-- Preload YouTube API script to ensure it's available early -->
     <script async src="https://www.youtube.com/iframe_api" crossorigin="anonymous"></script>
     <script type="module" src="/src/main.jsx"></script>

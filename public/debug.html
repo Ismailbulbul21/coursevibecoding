@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Vercel Debug Page</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; line-height: 1.6; }
+    .card { background: #f5f5f5; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+    h1 { color: #333; }
+    pre { background: #eee; padding: 10px; border-radius: 4px; overflow: auto; }
+  </style>
+</head>
+<body>
+  <h1>Vercel Deployment Debug</h1>
+  
+  <div class="card">
+    <h2>Environment Check</h2>
+    <p>This static page is working correctly if you can see it.</p>
+    <p>Current URL: <span id="current-url"></span></p>
+    <p>Time: <span id="current-time"></span></p>
+  </div>
+  
+  <div class="card">
+    <h2>Static Asset Test</h2>
+    <p>Testing if static assets can be loaded:</p>
+    <div id="asset-test-result">Running test...</div>
+  </div>
+
+  <div class="card">
+    <h2>Console Output</h2>
+    <pre id="console-output">Check your browser's developer console for errors</pre>
+  </div>
+
+  <script>
+    // Display basic information
+    document.getElementById('current-url').textContent = window.location.href;
+    document.getElementById('current-time').textContent = new Date().toString();
+    
+    // Create a test image to see if assets load
+    const img = new Image();
+    img.onload = () => {
+      document.getElementById('asset-test-result').innerHTML = 
+        'Success: Static assets can be loaded ✅';
+    };
+    img.onerror = () => {
+      document.getElementById('asset-test-result').innerHTML = 
+        'Error: Failed to load static test image ❌';
+    };
+    img.src = '/vite.svg'; // This should exist from your index.html
+    
+    // Capture console logs
+    const originalConsole = {
+      log: console.log,
+      error: console.error,
+      warn: console.warn
+    };
+    
+    const consoleOutput = document.getElementById('console-output');
+    
+    function updateConsoleOutput(type, args) {
+      const message = Array.from(args).map(arg => 
+        typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+      ).join(' ');
+      
+      consoleOutput.textContent += `[${type}] ${message}\n`;
+    }
+    
+    console.log = function() {
+      updateConsoleOutput('log', arguments);
+      originalConsole.log.apply(console, arguments);
+    };
+    
+    console.error = function() {
+      updateConsoleOutput('error', arguments);
+      originalConsole.error.apply(console, arguments);
+    };
+    
+    console.warn = function() {
+      updateConsoleOutput('warn', arguments);
+      originalConsole.warn.apply(console, arguments);
+    };
+    
+    // Log basic environment info
+    console.log('Debug page loaded at:', new Date().toString());
+    console.log('User Agent:', navigator.userAgent);
+  </script>
+</body>
+</html> 
